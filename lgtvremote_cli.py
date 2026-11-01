@@ -1973,6 +1973,23 @@ def cmd_dimming(args):
         sys.exit(1)
 
 
+_LUNA_INPUT_URI = "luna://com.webos.service.eim/setDeviceInfo"
+
+
+def cmd_input_icon(args):
+
+    calls = []
+    calls.append((_LUNA_INPUT_URI, {"id": "HDMI_2", "icon": "satellite.png"}))
+    calls.append((_LUNA_INPUT_URI, {"id": "HDMI_2", "icon": "settopbox.png"}))
+
+    if _run_luna_calls(args, calls):
+        print("Input icon changed")
+    else:
+        print("Error: TV did not accept input icon change.",
+              file=sys.stderr)
+        sys.exit(1)
+
+
 # --- Scenes ---
 # Named presets that apply a batch of TV settings in one command, mirroring
 # the iOS/Android apps' Scenes feature. Scenes are stored per TV in
@@ -2599,6 +2616,7 @@ def build_parser() -> argparse.ArgumentParser:
               lgtv volume set 25                # Set volume to 25
               lgtv launch Netflix               # Launch app by name
               lgtv input 1                      # Switch to HDMI 1
+              lgtv inputicon                    # Change Icon
               lgtv nav ok                       # Press OK button
               lgtv picture-mode game            # Set picture mode
               lgtv backlight 80                 # Set backlight level
@@ -2693,6 +2711,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_input = sub.add_parser("input", help="Switch TV input (e.g., HDMI_1, 1, or a label like 'PS5')")
     p_input.add_argument("input", help="Input ID, number, or label (e.g., 1, HDMI_1, PS5)")
     sub.add_parser("inputs", help="List available inputs")
+    sub.add_parser("inputicon", help="Change input icon")
     p_alias = sub.add_parser("input-alias", help="Set or remove a custom label for an input")
     p_alias.add_argument("input_id", help="Input ID (e.g., HDMI_1 or just 1)")
     p_alias.add_argument("alias", nargs="?", default=None, help="Label to set (omit to remove)")
@@ -2867,6 +2886,7 @@ def main():
         "audio-track": cmd_audio_track,
         "energy-saving": cmd_energy_saving,
         "dimming": cmd_dimming,
+        "inputicon": cmd_input_icon,
         "screenshot": cmd_screenshot,
     }
 
