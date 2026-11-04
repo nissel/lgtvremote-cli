@@ -1976,11 +1976,10 @@ def cmd_dimming(args):
 _LUNA_INPUT_URI = "luna://com.webos.service.eim/setDeviceInfo"
 
 
-def cmd_input_icon(args):
+def cmd_input_icon_toggle(args):
 
-    calls = []
-    calls.append((_LUNA_INPUT_URI, {"id": "HDMI_2", "icon": "satellite.png"}))
-    calls.append((_LUNA_INPUT_URI, {"id": "HDMI_2", "icon": "settopbox.png"}))
+    calls = [(_LUNA_INPUT_URI, {"id": "HDMI_" + args.input, "label": args.label, "icon": "satellite.png"}),
+             (_LUNA_INPUT_URI, {"id": "HDMI_" + args.input, "label": args.label, "icon": "hdmigeneric.png"})]
 
     if _run_luna_calls(args, calls):
         print("Input icon changed")
@@ -1988,6 +1987,7 @@ def cmd_input_icon(args):
         print("Error: TV did not accept input icon change.",
               file=sys.stderr)
         sys.exit(1)
+
 
 
 # --- Scenes ---
@@ -2711,7 +2711,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_input = sub.add_parser("input", help="Switch TV input (e.g., HDMI_1, 1, or a label like 'PS5')")
     p_input.add_argument("input", help="Input ID, number, or label (e.g., 1, HDMI_1, PS5)")
     sub.add_parser("inputs", help="List available inputs")
-    sub.add_parser("inputicon", help="Change input icon")
+    p_input_icon_toggle = sub.add_parser("input_icon_toggle", help="Toggle input icon")
+    p_input_icon_toggle.add_argument("input", help="Input number (e.g., 1-4)")
+    p_input_icon_toggle.add_argument("label", help="Label (e.g., AVR, NUC)")
     p_alias = sub.add_parser("input-alias", help="Set or remove a custom label for an input")
     p_alias.add_argument("input_id", help="Input ID (e.g., HDMI_1 or just 1)")
     p_alias.add_argument("alias", nargs="?", default=None, help="Label to set (omit to remove)")
@@ -2860,6 +2862,7 @@ def main():
         "skip-back": cmd_skip_back,
         "input": cmd_input,
         "inputs": cmd_inputs,
+        "input_icon_toggle": cmd_input_icon_toggle,
         "input-alias": cmd_input_alias,
         "launch": cmd_launch,
         "apps": cmd_apps,
@@ -2886,7 +2889,6 @@ def main():
         "audio-track": cmd_audio_track,
         "energy-saving": cmd_energy_saving,
         "dimming": cmd_dimming,
-        "inputicon": cmd_input_icon,
         "screenshot": cmd_screenshot,
     }
 
