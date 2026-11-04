@@ -2616,7 +2616,7 @@ def build_parser() -> argparse.ArgumentParser:
               lgtv volume set 25                # Set volume to 25
               lgtv launch Netflix               # Launch app by name
               lgtv input 1                      # Switch to HDMI 1
-              lgtv inputicon                    # Change Icon
+              lgtv input_icon_toggle 1 NUC      # Toggle HDMI 1 Icon and change label to NUC
               lgtv nav ok                       # Press OK button
               lgtv picture-mode game            # Set picture mode
               lgtv backlight 80                 # Set backlight level
